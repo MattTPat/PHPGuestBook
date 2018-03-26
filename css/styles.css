@@ -1,0 +1,17 @@
+body{
+    background-color: azure;
+}
+
+th{
+    font-weight: bold;
+}
+
+td{
+    border-bottom: 1px solid #ddd;
+    padding:5px;
+}
+
+.login{
+    max-width: 500px;
+    margin:auto;
+}

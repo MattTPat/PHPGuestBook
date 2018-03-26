@@ -2,16 +2,15 @@
 
 require_once 'config.php';
 
-// Initialize the session
 session_start();
-// If session variable is not set it will redirect to login page
+// Checks to make sure session variable is set
 if(!isset($_SESSION['username']) || empty($_SESSION['username'])){
 header("location: index.php");
 exit;
 }
-// make sure user is correct usertype
+// Checks to see if the user is the right type to access the page
 if(!isset($_SESSION['usertype']) || empty($_SESSION['usertype']) || !($_SESSION['usertype'] == "admin")){
-header("location: login.php");
+header("location: index.php");
 exit;
 }
 
@@ -24,9 +23,16 @@ exit;
     <link rel="stylesheet" type="text/css" href="css/styles.css">
 </head>
 <body>
-
+<form method="post" action="logout.php">
+        <input type="submit" value="Log Out" name="logout">
+    </form><br>
     <form method="post" action="download.php">
         <input type="submit" name="csv" value="Download CSV">
+    </form><br>
+    <form action="upload.php" method="post" enctype="multipart/form-data">
+        Upload CSV:<br>
+        <input type="file" name="fileToUpload" id="fileToUpload"><br>
+        <input type="submit" value="Upload" name="upload">
     </form>
           
 </body>

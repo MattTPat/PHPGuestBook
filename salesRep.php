@@ -2,23 +2,23 @@
 
 require_once 'config.php';
 
-// Initialize the session
 session_start();
-// If session variable is not set it will redirect to login page
+// Checks to make sure session variable is set
 if(!isset($_SESSION['username']) || empty($_SESSION['username'])){
 header("location: index.php");
 exit;
 }
-// make sure user is correct usertype
+// Checks to see if the user is the right type to access the page
 if(!isset($_SESSION['usertype']) || empty($_SESSION['usertype']) || !($_SESSION['usertype'] == "salesRep")){
-header("location: login.php");
+header("location: index.php");
 exit;
 }
 
-//Database
+// Database
 $sql = "SELECT * FROM clientinfo";
 $result = mysqli_query($mysqli, $sql) or die("could not perform query");
 
+// Checks for new client
 if(isset($_POST["addClient"])){
     $firstName = $_POST["firstName"];
     $lastName = $_POST["lastName"];
@@ -34,12 +34,14 @@ if(isset($_POST["addClient"])){
     $mysqli->query($sqlOutput);
     
     echo("<script>window.location = 'salesRep.php';</script>");
+// Checks for deleted client
 }else if(isset($_POST["delete"])){
     $id = $_POST["deleteID"];
     $sqlOutput = "DELETE FROM clientinfo WHERE id='$id'";
     $mysqli->query($sqlOutput);
 
     echo("<script>window.location = 'salesRep.php';</script>");
+// Checks for client edits
 }else if(isset($_POST["saveEdit"])){
     $firstName = $_POST["firstName"];
     $lastName = $_POST["lastName"];
@@ -67,16 +69,22 @@ if(isset($_POST["addClient"])){
     <link rel="stylesheet" type="text/css" href="css/styles.css">
 </head>
 <body>
-    <h2>Sales rep page!</h2>
+    <form method="post" action="logout.php">
+        <input type="submit" value="Log Out" name="logout">
+    </form><br>
+    <h2>Guest Book</h2>
+    <form method="post" action="email.php">
+        <input type="submit" value="Send Email" name="sendEmail">
+    </form><br>
     <form method="post" action="salesRep.php">
         <input type="submit" value="View All" name="viewAll">
         <input type="submit" value="Current Month Only" name="thisMonth">
-        
     </form>
     
     <table>
-        <tr><td>ID</td><td>First Name</td><td>Last Name</td><td>Phone Number</td><td>Email</td><td>Street Address</td><td>City</td><td>Province</td><td>Postal Code</td><td>DOB</td></tr>
+        <tr><th>ID</th><th>First Name</th><th>Last Name</th><th>Phone Number</th><th>Email</th><th>Street Address</th><th>City</th><th>Province</th><th>Postal Code</th><th>DOB</th></tr>
     <?php
+        // Gets of all the entries from the database
         if(isset($_POST["thisMonth"])){
             $sql = "SELECT * FROM clientinfo WHERE MONTH(dob) = MONTH(CURRENT_DATE())";
             $result = mysqli_query($mysqli, $sql) or die("could not perform query");
@@ -104,34 +112,11 @@ if(isset($_POST["addClient"])){
     <h2>Add Client</h2>
 
     <form method="post" action="salesRep.php">
-        First name:<br>
-        <input type="text" name="firstName" placeholder="First Name">
-        <br>
-        Last name:<br>
-        <input type="text" name="lastName" placeholder="Last Name">
-        <br>
-        Phone Number:<br>
-        <input type="text" name="phone" placeholder="Phone Number">
-        <br>
-        Email:<br>
-        <input type="text" name="email" placeholder="Email">
-        <br>
-        Street Address:<br>
-        <input type="text" name="address" placeholder="Street Address">
-        <br>
-        City:<br>
-        <input type="text" name="city" placeholder="City">
-        <br>
-        Province:<br>
-        <input type="text" name="province" placeholder="Province">
-        <br>
-        Postal Code:<br>
-        <input type="text" name="postal" placeholder="Postal Code">
-        <br>
-        Date of Birth:<br>
-        <input type="date" name="birthday" placeholder="Date of Birth">
-        <br><br>
-        <input type="submit" value="Add Client" name="addClient">
+    <table>
+        <tr><td>First Name</td><td>Last Name</td><td>Phone Number</td><td>Email</td><td>Street Address</td><td>City</td><td>Province</td><td>Postal Code</td><td>DOB</td></tr>
+        <tr><td><input type="text" name="firstName" placeholder="First Name"></td><td><input type="text" name="lastName" placeholder="Last Name"></td><td><input type="text" name="phone" placeholder="Phone Number"></td><td><input type="text" name="email" placeholder="Email"></td><td><input type="text" name="address" placeholder="Street Address"></td><td><input type="text" name="city" placeholder="City"></td><td><input type="text" name="province" placeholder="Province"></td><td><input type="text" name="postal" placeholder="Postal Code"></td><td><input type="date" name="birthday" placeholder="Date of Birth"></td><td><input type="submit" value="Add Client" name="addClient"></td></tr>
+        
+    </table>
     </form> 
 </body>
 
